@@ -44,6 +44,9 @@ class Calculator {
         return lhs * rhs
     }
     func divide(lhs : Int, rhs : Int) -> Int {
+        guard rhs != 0 else {
+            return 0
+        }
         return lhs / rhs
     }
     
@@ -52,14 +55,19 @@ class Calculator {
     }
     
     // Complex operations with array inputs
-    func add(_ inputArray : [Int]) -> Int {
-        var sum : Int = 0
+    func add(_ inputArray: [Int?]) -> Int {
+        var sum: Int = 0
         for num in inputArray {
-            sum += num
+            if let validNum = num {  // Only add if num is not nil
+                sum += validNum
+            }
         }
         return sum
     }
     func multiply(_ inputArray : [Int]) -> Int {
+        guard inputArray.count != 0 else {
+            return 0
+        }
         var product : Int = 1
         for num in inputArray {
             product *= num
@@ -70,6 +78,9 @@ class Calculator {
         return inputArray.count
     }
     func avg(_ inputArray : [Int]) -> Int {
+        guard inputArray.count != 0 else {
+            return 0
+        }
         return self.add(inputArray) / self.count(inputArray)
     }
     func mathOp(args : [Int], beg : Int, op : (Int, Int) -> Int) -> Int {
@@ -115,9 +126,25 @@ let calc = Calculator()
 //: Keep in mind that writing new tests may reveal ambiguity in the specification above--if that's the case, document the ambiguity, declare what you think *should* happen, and write the test to test for it.
 
 // ===== Your tests go here
-// CHECK EDGE CASES FOR DIVISION
-// non-numeric input
-// guard against lack of input / empty input
+
+// Checking for computations with negative numbers
+calc.add(lhs : -2, rhs : 2) == 0
+calc.subtract(lhs : 2, rhs : -2) == 4 // Subtracting by a negative number
+calc.multiply(lhs : -2, rhs : -2) == 4
+calc.divide(lhs : -2, rhs : 2) == -1
+
+// Checking edge cases for division (dividing by 0)
+calc.divide(lhs : 2, rhs : 0) == 0
+
+// Averaging on an empty array
+calc.avg([]) == 0
+
+// Adding/multiplying with an empty array
+calc.add([]) == 0
+calc.multiply([]) == 0
+
+// Ambiguity in specifications: Non-numeric input should be ignored, and the function should behave as if it is not present.
+calc.add([1, 2, nil, 3]) == 6
 
 //: ---
 //: ## Test code block
