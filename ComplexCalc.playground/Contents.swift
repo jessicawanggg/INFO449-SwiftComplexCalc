@@ -72,6 +72,34 @@ class Calculator {
     func avg(_ inputArray : [Int]) -> Int {
         return self.add(inputArray) / self.count(inputArray)
     }
+    func mathOp(args : [Int], beg : Int, op : (Int, Int) -> Int) -> Int {
+        // Note to self: beg behaves like a temporary sum or product variable, op determines the operation being performed, and reduce ensures that operation is performed on all values in the array.
+        return args.reduce(beg, op)
+    }
+    
+    // Operations on Cartesian points
+    func add(lhs : (Int, Int), rhs : (Int, Int)) -> (Int, Int) {
+        return (lhs.0 + rhs.0, lhs.1 + rhs.1)
+    }
+    func subtract(lhs : (Int, Int), rhs : (Int, Int)) -> (Int, Int) {
+        return (lhs.0 - rhs.0, lhs.1 - rhs.1)
+    }
+    
+    // Operations on Cartesian points with named attributes
+    func add(lhs : [String : Int], rhs : [String : Int]) -> [String : Int] {
+        var result = lhs
+        for (key, value) in rhs {
+            result[key] = (result[key] ?? 0) + value
+        }
+        return result
+    }
+    func subtract(lhs : [String : Int], rhs : [String : Int]) -> [String : Int] {
+        var result = lhs
+        for (key, value) in rhs {
+            result[key] = (result[key] ?? 0) - value
+        }
+        return result
+    }
 }
 
 //: Don't change the name of this object (`calc`); it's used in all the tests.
@@ -111,24 +139,24 @@ calc.count([]) == 0
 calc.avg([2, 2, 2, 2, 2, 2]) == 2
 calc.avg([1, 2, 3, 4, 5]) == 3
 calc.avg([1]) == 1
-//
-//calc.mathOp(args: [1, 2, 3], beg: 0, op: { $0 + $1 }) == 6
-//    // this is (((0 op 1) op 2) op 3)
-//calc.mathOp(args: [1, 2, 3, 4, 5], beg: 0, op: { $0 + $1 }) == 15
-//    // this is (((((0 op 1) op 2) op 3) op 4) op 5)
-//calc.mathOp(args: [1, 1, 1, 1, 1], beg: 1, op: { $0 * $1 }) == 1
-//    // this is (((((1 op 1) op 1) op 1) op 1) op 1)
-//
-//let p1 = (5, 5)
-//let p2 = (12, -27)
-//let p3 = (-4, 4)
-//let p4 = (0, 0)
-//calc.add(lhs: p1, rhs: p2) == (17, -22)
-//calc.subtract(lhs: p1, rhs: p2) == (-7, 32)
-//calc.add(lhs: p4, rhs: p4) == (0, 0)
-//calc.add(lhs: p3, rhs: p4) == (-4, 4)
-//
-//let pd1 = ["x": 5, "y": 5]
-//let pd2 = ["x": -4, "y": 4]
-//calc.add(lhs: pd1, rhs: pd2) == ["x": 1, "y": 9]
-//calc.subtract(lhs: pd1, rhs: pd2) == ["x": 9, "y": 1]
+
+calc.mathOp(args: [1, 2, 3], beg: 0, op: { $0 + $1 }) == 6
+    // this is (((0 op 1) op 2) op 3)
+calc.mathOp(args: [1, 2, 3, 4, 5], beg: 0, op: { $0 + $1 }) == 15
+    // this is (((((0 op 1) op 2) op 3) op 4) op 5)
+calc.mathOp(args: [1, 1, 1, 1, 1], beg: 1, op: { $0 * $1 }) == 1
+    // this is (((((1 op 1) op 1) op 1) op 1) op 1)
+
+let p1 = (5, 5)
+let p2 = (12, -27)
+let p3 = (-4, 4)
+let p4 = (0, 0)
+calc.add(lhs: p1, rhs: p2) == (17, -22)
+calc.subtract(lhs: p1, rhs: p2) == (-7, 32)
+calc.add(lhs: p4, rhs: p4) == (0, 0)
+calc.add(lhs: p3, rhs: p4) == (-4, 4)
+
+let pd1 = ["x": 5, "y": 5]
+let pd2 = ["x": -4, "y": 4]
+calc.add(lhs: pd1, rhs: pd2) == ["x": 1, "y": 9]
+calc.subtract(lhs: pd1, rhs: pd2) == ["x": 9, "y": 1]
